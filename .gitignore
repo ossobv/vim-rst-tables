@@ -1,1 +1,15 @@
 *.pyc
+*.swp
+
+/.eggs/
+/.pybuild/
+/vendor/vim_bridge3.egg-info/
+
+/debian/debhelper-build-stamp
+/debian/files
+/debian/vim-rst-tables-py3
+/debian/vim-rst-tables-py3.debhelper.log
+/debian/vim-rst-tables-py3.postinst.debhelper
+/debian/vim-rst-tables-py3.prerm.debhelper
+/debian/vim-rst-tables-py3.substvars
+/debian/vim-rst-tables-py3/

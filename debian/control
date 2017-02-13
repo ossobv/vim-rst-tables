@@ -1,0 +1,22 @@
+Source: vim-rst-tables-py3
+Maintainer: Walter Doekes <wjdoekes+vim@osso.nl>
+Section: editors
+Priority: optional
+Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 9), python3, python3-mock
+Build-Depends-Indep: python3:any, dh-python
+
+Package: vim-rst-tables-py3
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+ vim-runtime (>=2:7.4), vim-runtime (<2:7.5)
+Description: ViM plugin for rST table (re)formatting
+ vim-rst-tables-py3 contains the ViM plugin to (re)format tables in
+ reStructuredText format along with its Python3 dependencies python3-vim
+ and python3-vim-bridge.
+ .
+ When editing with ViM, use \\f when on an rST-table to reformat it. Or
+ \\c on a space-table to create an initial rST-table.
+Homepage: https://github.com/ossobv/vim-rst-tables-py3

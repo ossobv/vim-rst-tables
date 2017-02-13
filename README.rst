@@ -1,6 +1,9 @@
 =================================================================
-vim-rst-tables (original: https://github.com/nvie/vim-rst-tables)
+vim-rst-tables-py3
 =================================================================
+
+*Original:* `<https://github.com/nvie/vim-rst-tables>`_
+
 
 Installation
 ------------
@@ -29,6 +32,10 @@ Installation
 
       sudo apt-get install python3-mock  # or pip3 install mock
       PYTHONPATH=`pwd`/src python3 -m unittest discover
+
+5. Optionally create debian-package for easy installation::
+
+      dpkg-buildpackage -us -uc -sa
 
 
 Usage
@@ -88,7 +95,7 @@ you can define the column width you would prefer, and re-flow your table.
 Changes
 -------
 
-- Original code by Vincent Driessen <me@nvie.com>, lastly in 2015,
+- Original code by Vincent Driessen (@nvie), lastly in 2015,
   probably BSD License.
-- Updated for Python3 by wdoekes in 2017. Also added vendor dependencies
-  for quicker install.
+- Updated for Python3 by Walter Doekes (@wdoekes) in 2017. Added vendor
+  dependencies for easier install. Added debian packaging rules.

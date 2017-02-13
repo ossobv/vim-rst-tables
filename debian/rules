@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+export DESTDIR := $(CURDIR)/debian/vim-rst-tables-py3
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_installdocs:
+	dh_installdocs
+	python3 build.py
+	install -D -t $(DESTDIR)/usr/share/vim/vim74/ftplugin/ ftplugin/rst_tables.vim

@@ -1,11 +1,14 @@
-==================================================================================
-vim_bridge - a Python-to-Vim bridge (original: https://github.com/nvie/vim_bridge)
-==================================================================================
+===================================
+vim_bridge - a Python-to-Vim bridge
+===================================
+
+*Original:* `<https://github.com/nvie/vim_bridge>`_
+
 
 What is it?
 -----------
 
-vim_bridge_ is a Python-to-Vim bridge decorator that allows transparent calls
+*vim_bridge* is a Python-to-Vim bridge decorator that allows transparent calls
 to Python functions in native Vim scripts.
 
 
@@ -27,7 +30,7 @@ be transparent::
 
     " Now call directly into the Python function!
     echo SayHello("John", "Doe")
-               " prints "Hello, John Doe!"
+    " prints "Hello, John Doe!"
 
 
 Supported
@@ -158,5 +161,5 @@ called from outside the script)::
 Changes
 -------
 
-- Original code by Vincent Driessen (nvie) in 2010. BSD License.
-- Updated for Python3 by wdoekes in 2017.
+- Original code by Vincent Driessen (@nvie) in 2010. BSD License.
+- Updated for Python3 by Walter Doekes (@wdoekes) in 2017.

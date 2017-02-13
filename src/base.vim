@@ -4,7 +4,7 @@
 " Maintainer:   Walter Doekes <wjdoekes+vim@osso.nl>
 " Author:       Vincent Driessen <vincent@datafox.nl>
 " Version:      Vim 7 (may work with lower Vim versions, but not tested)
-" URL:          https://github.com/ossobv/vim-rst-tables
+" URL:          https://github.com/ossobv/vim-rst-tables-py3
 "
 " This plugin is a more flexible reimplementation of the ideas and the
 " existing Vim plugin by Hugo Ruscitti:

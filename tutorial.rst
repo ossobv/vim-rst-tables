@@ -1,6 +1,7 @@
 Simple example
 ==============
-Set your cursor inside the following paragraph and type :kbd:`,,c`::
+
+Set your cursor inside the following paragraph and type :kbd:`\\c`::
 
   Feature  Description
   Easy  It's soo easy, man.
@@ -36,7 +37,7 @@ like this::
   | Repeatable  | It can be repeated.              |
   +-------------+----------------------------------+
 
-Then, set your cursor inside the table again, and type :kbd:`,,f` to reformat
+Then, set your cursor inside the table again, and type :kbd:`\\f` to reformat
 the table.
 
 

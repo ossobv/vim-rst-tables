@@ -1,36 +1,34 @@
-vim-rst-tables
-==============
-
-.. image:: http://stillmaintained.com/nvie/vim-rst-tables.png
-
-.. contents:: **Contents**
-   :local:
-
+=================================================================
+vim-rst-tables (original: https://github.com/nvie/vim-rst-tables)
+=================================================================
 
 Installation
 ------------
-1. Install the following packages from PyPI:
 
-   - vim_bridge_:  This is required for the vim plugin scripts, to call
-     directly into Python functions.
+1. Install the prerequisites::
 
-2. Clone the git repository::
+      python3 setup.py install
 
-       git clone git://github.com/nvie/vim-rst-tables.git
-       cd vim-rst-tables
+      (or better yet, fetch it through a debian package or pip;
+      in which case you might also be able to skip step 2 and 3)
 
-3. Make the project::
+2. Make the project::
 
-       python build.py
+      python3 build.py
 
-4. Copy the file ``ftplugin/rst_tables.vim`` to your ``~/.vim/ftplugin``
-   directory. If your vim is not already configured to source scripts
-   in this directory, make sure to add the appropriate command to your
+3. Copy the file ``ftplugin/rst_tables.vim`` to your ``~/.vim/ftplugin``
+   directory.
+
+   **If your vim is not already configured to source scripts in this
+   directory**, make sure to add the appropriate command to your
    ``.vimrc``::
 
-        source "~/.vim/ftplugin/rst_tables.vim"
+      source "~/.vim/ftplugin/rst_tables.vim"
 
-.. _vim_bridge: http://pypi.python.org/pypi/vim_bridge
+4. Optionally run tests::
+
+      sudo apt-get install python3-mock  # or pip3 install mock
+      PYTHONPATH=`pwd`/src python3 -m unittest discover
 
 
 Usage
@@ -53,8 +51,8 @@ Creating a new table
 
 2. Put your cursor somewhere in the table.
 3. To create the table, press :kbd:`,,c` (or :kbd:`\\c` if vim's
-   :kbd:`&lt;Leader&gt;` is set to the default value).  The output will look
-   something like this::
+   :kbd:`&lt;Leader&gt;` is set to the default value; yes *double*
+   backslash). The output will look something like this::
 
       This is paragraph text *before* the table.
 
@@ -83,5 +81,14 @@ you can define the column width you would prefer, and re-flow your table.
    the column widths you would prefer.
 2. Put your cursor somewhere in the table.
 3. Press :kbd:`,,f` to re-flow the table (or :kbd:`\\f` if vim's
-   :kbd:`&lt;Leader&gt;` is set to the default value; see also the ``:map``
-   command).
+   :kbd:`&lt;Leader&gt;` is set to the default value; yes *double*
+   backslash; see also the ``:map`` command).
+
+
+Changes
+-------
+
+- Original code by Vincent Driessen <me@nvie.com>, lastly in 2015,
+  probably BSD License.
+- Updated for Python3 by wdoekes in 2017. Also added vendor dependencies
+  for quicker install.

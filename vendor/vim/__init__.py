@@ -9,7 +9,10 @@ atexit.register(os.remove, temp_filename)
 
 
 def vim(editor=''):
-    """ Vim function, takes an alternative editor as a param. Will launch an editor instance and exec the code written to that file"""
+    """
+    Vim function, takes an alternative editor as a param. Will launch an
+    editor instance and exec the code written to that file.
+    """
 
     last_mtime = os.path.getmtime(temp_filename)
     editor = editor or os.getenv('EDITOR') or 'vi'
@@ -20,7 +23,8 @@ def vim(editor=''):
         last_mtime = os.path.getmtime(temp_filename)
         new_locals = {}
         try:
-            exec(open(temp_filename).read(), globals(), new_locals)
+            with open(temp_filename) as fp:
+                exec(fp.read(), globals(), new_locals)
         except SystemExit:
             pass
         for k, v in new_locals.items():

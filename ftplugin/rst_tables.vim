@@ -1,9 +1,10 @@
 "
 " reStructuredText tables plugin
 " Language:     Python (ft=python)
-" Maintainer:   Vincent Driessen <vincent@datafox.nl>
+" Maintainer:   Walter Doekes <wjdoekes+vim@osso.nl>
+" Author:       Vincent Driessen <vincent@datafox.nl>
 " Version:      Vim 7 (may work with lower Vim versions, but not tested)
-" URL:          http://github.com/nvie/vim-rst-tables
+" URL:          https://github.com/ossobv/vim-rst-tables
 "
 " This plugin is a more flexible reimplementation of the ideas and the
 " existing Vim plugin by Hugo Ruscitti:
@@ -16,12 +17,16 @@ if exists("g:loaded_rst_tables_ftplugin")
 endif
 let loaded_rst_tables_ftplugin = 1
 
-python << endpython
+if !has('python3')
+    " http://www.terminally-incoherent.com/blog/2013/05/06/vriting-vim-plugins-in-python/
+    echo "No python3 support (see: rst_tables.vim)"
+    finish
+endif
+
+python3 << endpython
 import vim
 import re
 import textwrap
-import unicodedata
-import codecs
 from vim_bridge import bridged
 
 
@@ -29,7 +34,7 @@ def get_table_bounds():
     row, col = vim.current.window.cursor
     upper = lower = row
     try:
-        while vim.current.buffer[upper - 1].strip() and upper > 0:
+        while vim.current.buffer[upper - 1].strip():
             upper -= 1
     except IndexError:
         pass
@@ -48,6 +53,7 @@ def get_table_bounds():
 
     return (upper, lower, match.group(1))
 
+
 def join_rows(rows, sep='\n'):
     """Given a list of rows (a list of lists) this function returns a
     flattened list where each the individual columns of all rows are joined
@@ -65,7 +71,7 @@ def join_rows(rows, sep='\n'):
             field_text = field.strip()
             if field_text:
                 output[i].append(field_text)
-    return map(lambda lines: sep.join(lines), output)
+    return list(map(lambda lines: sep.join(lines), output))
 
 
 def line_is_separator(line):
@@ -85,12 +91,11 @@ def partition_raw_lines(raw_lines):
 
     """
     if not has_line_seps(raw_lines):
-        return map(lambda x: [x], raw_lines)
+        return list(map(lambda x: [x], raw_lines))
 
     curr_part = []
     parts = [curr_part]
     for line in raw_lines:
-        line = line.encode('utf8')
         if line_is_separator(line):
             curr_part = []
             parts.append(curr_part)
@@ -98,7 +103,7 @@ def partition_raw_lines(raw_lines):
             curr_part.append(line)
 
     # remove any empty partitions (typically the first and last ones)
-    return filter(lambda x: x != [], parts)
+    return list(filter(lambda x: x != [], parts))
 
 
 def unify_table(table):
@@ -145,8 +150,9 @@ def split_table_row(row_string):
 
 def parse_table(raw_lines):
     row_partition = partition_raw_lines(raw_lines)
-    lines = map(lambda row_string: join_rows(map(split_table_row, row_string)),
-                row_partition)
+    lines = list(map(
+        (lambda row_string: join_rows(list(map(split_table_row, row_string)))),
+        row_partition))
     return unify_table(lines)
 
 
@@ -165,20 +171,11 @@ def table_line(widths, header=False):
 
 
 def get_field_width(field_text):
-    return max(map(get_string_width, field_text.split('\n')))
+    return max(map(lambda s: len(s), field_text.split('\n')))
 
-def get_string_width(string):
-    width = 0
-    for char in list(string):
-        eaw = unicodedata.east_asian_width(char)
-        if eaw == 'Na' or eaw == 'H':
-            width += 1
-        else:
-            width += 2
-    return width
 
 def split_row_into_lines(row):
-    row = map(lambda field: field.split('\n'), row)
+    row = list(map(lambda field: field.split('\n'), row))
     height = max(map(lambda field_lines: len(field_lines), row))
     turn_table = []
     for i in range(height):
@@ -206,22 +203,25 @@ def get_column_widths(table):
     return widths
 
 
-def get_column_widths_from_border_spec(slice):
+def get_column_widths_from_border_spec(slice_):
     border = None
-    for row in slice:
+    for row in slice_:
         if line_is_separator(row):
             border = row.strip()
             break
 
     if border is None:
-        raise RuntimeError('Cannot reflow this table. Top table border not found.')
+        raise RuntimeError(
+            'Cannot reflow this table. Top table border not found.')
 
     left = right = None
     if border[0] == '+':
         left = 1
     if border[-1] == '+':
         right = -1
-    return map(lambda drawing: max(0, len(drawing) - 2), border[left:right].split('+'))
+    return list(map(
+        (lambda drawing: max(0, len(drawing) - 2)),
+        border[left:right].split('+')))
 
 
 def pad_fields(row, widths):
@@ -229,15 +229,13 @@ def pad_fields(row, widths):
     others.
 
     """
-    widths = map(lambda w: ' %-' + str(w) + 's ', widths)
+    widths = list(map(lambda w: ' %-' + str(w) + 's ', widths))
 
     # Pad all fields using the calculated widths
     new_row = []
     for i in range(len(row)):
         col = row[i]
-        col = col.decode('utf8')
         col = widths[i] % col.strip()
-        col = col.encode('utf8')
         new_row.append(col)
     return new_row
 
@@ -260,7 +258,7 @@ def draw_table(indent, table, manual_widths=None):
         col_widths = manual_widths
 
     # Reserve room for the spaces
-    sep_col_widths = map(lambda x: x + 2, col_widths)
+    sep_col_widths = list(map(lambda x: x + 2, col_widths))
     header_line = table_line(sep_col_widths, header=True)
     normal_line = table_line(sep_col_widths, header=False)
 
@@ -291,26 +289,20 @@ def draw_table(indent, table, manual_widths=None):
 @bridged
 def reformat_table():
     upper, lower, indent = get_table_bounds()
-    encoding = vim.eval("&encoding")
-    slice = map(lambda x: codecs.decode(x, encoding), \
-    	vim.current.buffer[upper - 1:lower])
-    table = parse_table(slice)
-    slice = draw_table(indent, table)
-    vim.current.buffer[upper - 1:lower] = map(lambda x: \
-    	codecs.encode(x, encoding), slice)
+    slice_ = vim.current.buffer[upper - 1:lower]
+    table = parse_table(slice_)
+    slice_ = draw_table(indent, table)
+    vim.current.buffer[upper - 1:lower] = slice_
 
 
 @bridged
 def reflow_table():
     upper, lower, indent = get_table_bounds()
-    encoding = vim.eval("&encoding")
-    slice = map(lambda x: codecs.decode(x, encoding), \
-    	vim.current.buffer[upper - 1:lower])
-    widths = get_column_widths_from_border_spec(slice)
-    table = parse_table(slice)
-    slice = draw_table(indent, table, widths)
-    vim.current.buffer[upper - 1:lower] = map(lambda x: \
-    	codecs.encode(x, encoding), slice)
+    slice_ = vim.current.buffer[upper - 1:lower]
+    widths = get_column_widths_from_border_spec(slice_)
+    table = parse_table(slice_)
+    slice_ = draw_table(indent, table, widths)
+    vim.current.buffer[upper - 1:lower] = slice_
 
 endpython
 

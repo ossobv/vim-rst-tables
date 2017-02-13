@@ -1,9 +1,10 @@
 "
 " reStructuredText tables plugin
 " Language:     Python (ft=python)
-" Maintainer:   Vincent Driessen <vincent@datafox.nl>
+" Maintainer:   Walter Doekes <wjdoekes+vim@osso.nl>
+" Author:       Vincent Driessen <vincent@datafox.nl>
 " Version:      Vim 7 (may work with lower Vim versions, but not tested)
-" URL:          http://github.com/nvie/vim-rst-tables
+" URL:          https://github.com/ossobv/vim-rst-tables
 "
 " This plugin is a more flexible reimplementation of the ideas and the
 " existing Vim plugin by Hugo Ruscitti:
@@ -16,7 +17,13 @@ if exists("g:loaded_rst_tables_ftplugin")
 endif
 let loaded_rst_tables_ftplugin = 1
 
-python << endpython
+if !has('python3')
+    " http://www.terminally-incoherent.com/blog/2013/05/06/vriting-vim-plugins-in-python/
+    echo "No python3 support (see: rst_tables.vim)"
+    finish
+endif
+
+python3 << endpython
 __PYTHON_SOURCE__
 endpython
 

@@ -49,6 +49,19 @@ class TestRSTTableFormatter(unittest.TestCase):
     def load_fixture_in_vim(self, name):
         vim.current.buffer = self.read_fixture(name)
 
+    def reflow_table_vim(self, expect, input):
+        text_before_table = 'A piece of text before the table.\n\n'
+        vim.current.buffer = (text_before_table + input).split('\n')
+
+        reflow_table()
+
+        self.assertEqual(
+            (text_before_table + expect).split('\n'),
+            vim.current.buffer)
+
+    def split_table_row_equal(self, expect, input):
+        self.assertEqual(expect, split_table_row(input))
+
     def testGetBounds(self):
         self.load_fixture_in_vim('default')
         self.assertEqual((3, 6, ''), get_table_bounds())
@@ -177,9 +190,6 @@ class TestRSTTableFormatter(unittest.TestCase):
         input = ['One\n\n\nThree', 'Foo\nBar']
         expect = [['One', 'Foo'], ['', 'Bar'], ['', ''], ['Three', '']]
         self.assertEqual(expect, split_row_into_lines(input))
-
-    def split_table_row_equal(self, expect, input):
-        self.assertEqual(expect, split_table_row(input))
 
     def testSplitTableRow(self):
         self.split_table_row_equal(
@@ -351,3 +361,17 @@ a line ending.
 """.split('\n')
         reflow_table()
         self.assertEqual(expect, vim.current.buffer)
+
+    def testReflowWithReplacements(self):
+        # The first border decides the table size.
+        self.reflow_table_vim("""\
++--------------------+-----+-----+-----+
+| **Services**       | 0   | 1   | 2   |
++====================+=====+=====+=====+
+| VPN Service        | |O| | |O| | |X| |
++--------------------+-----+-----+-----+""", """\
++--------------------+-----+-----+-----+
+| **Services**       | 0 | 1 | 2 |
++====================+===+===+===+
+| VPN Service        | |O| | |O| | |X| |
++--------------------+---+---+---+""")

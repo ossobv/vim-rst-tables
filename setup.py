@@ -15,7 +15,7 @@ long_description = 'python3-vim, python3-vim-bridge'
 
 setup(
     name='vim_bridge3',
-    version='3.0rc1',
+    version='3.0rc2',
     description='A Python-to-Vim bridge decorator that allows transparent calls to Python functions in native Vim scripts.',
     author='Hector Acosta, Vincent Driessen, Walter Doekes',
     author_email='wjdoekes+github@wjd.nu',

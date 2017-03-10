@@ -1,5 +1,6 @@
-vim-rst-tables-py3 (3.0~rc1-1) stable; urgency=medium
+vim-rst-tables-py3 (3.0~rc2-1) stable; urgency=medium
 
   * vim-rst-tables for Python3.
+  * With support for "|replacement|" inside tables.
 
- -- Walter Doekes <wjdoekes+vim@osso.nl>  Mon, 13 Feb 2017 17:09:07 +0100
+ -- Walter Doekes <wjdoekes+vim@osso.nl>  Fri, 10 Mar 2017 10:12:31 +0100

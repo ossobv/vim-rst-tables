@@ -115,11 +115,17 @@ def unify_table(table):
 
 
 def split_table_row(row_string):
-    if row_string.find("|") >= 0:
-        # first, strip off the outer table drawings
-        row_string = re.sub(r'^\s*\||\|\s*$', '', row_string)
-        return re.split(r'\s*\|\s*', row_string.strip())
-    return re.split(r'\s\s+', row_string.rstrip())
+    # if "^| " or " | " or " |$" is found, this is already a table,
+    # if not, then we're creating a table with double space
+    if not re.search(r'^\|\s+|\s+\|\s+|\s+\|$', row_string):
+        return re.split(r'\s\s+', row_string.rstrip())
+
+    # strip off the outer table drawings ("^| " and " |$"), but not
+    # "^|[^ ]" or "[^ ]|$" because they can be used in "|replacements|"
+    row_string = re.sub(r'^\s*\|\s+|\s+\|\s*$', '', row_string)
+    # split, not by "|" but by " | " so we can have "|replacements|"
+    # inside columns as well
+    return re.split(r'^\|\s+|\s+\|\s+|\s+\|$', row_string)
 
 
 def parse_table(raw_lines):

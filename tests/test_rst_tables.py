@@ -25,10 +25,11 @@ from rst_tables import (
     reflow_table, draw_table, table_line, get_column_widths,
     get_column_widths_from_border_spec, pad_fields, unify_table,
     join_rows, partition_raw_lines, split_row_into_lines,
-    reflow_row_contents)
+    split_table_row, reflow_row_contents)
 
 
 class TestRSTTableFormatter(unittest.TestCase):
+    maxDiff = None
 
     def setUp(self):
         # Default vim cursor for all tests is at line 4
@@ -94,8 +95,8 @@ class TestRSTTableFormatter(unittest.TestCase):
         expected = [
             ['Column 1', 'Column 2'],
             ['Foo', 'Put two (or more) spaces as a field separator.'],
-            ['Bar', (
-                'Even very very long lines like these are fine, '
+            ['|Bar|', (
+                'Even very very long lines |like| these are fine, '
                 'as long as you do not put in line endings here.')],
             ['Qux', 'This is the last line.'],
         ]
@@ -135,7 +136,7 @@ class TestRSTTableFormatter(unittest.TestCase):
                  '| Foo | Mu                   |',
                  '+=====+====+',
                  '| x   | This became somewhat larger  |',
-                 'blah   | A new line| ',
+                 'blah   | A new line | ',
                  '+-----+----+']
         expect = [['Foo', 'Mu'],
                   ['x\nblah', 'This became somewhat larger\nA new line']]
@@ -145,7 +146,7 @@ class TestRSTTableFormatter(unittest.TestCase):
                  '| Foo | Mu                   |',
                  '+=====+====+',
                  '| x   | This became somewhat larger  |',
-                 'blah   | A new line|| ',
+                 'blah   | A new line | ',
                  '+-----+----+']
         expect = [['Foo', 'Mu'],
                   ['x\nblah', 'This became somewhat larger\nA new line']]
@@ -176,6 +177,20 @@ class TestRSTTableFormatter(unittest.TestCase):
         input = ['One\n\n\nThree', 'Foo\nBar']
         expect = [['One', 'Foo'], ['', 'Bar'], ['', ''], ['Three', '']]
         self.assertEqual(expect, split_row_into_lines(input))
+
+    def split_table_row_equal(self, expect, input):
+        self.assertEqual(expect, split_table_row(input))
+
+    def testSplitTableRow(self):
+        self.split_table_row_equal(
+            ['Foo Bar', 'Baz', '3'],
+            'Foo Bar    Baz  3   ')
+        self.split_table_row_equal(
+            ['|replacement|', 'text'],
+            '| |replacement| | text |')
+        self.split_table_row_equal(
+            ['', '|replacement| texts', 'more text'],
+            '| | |replacement| texts | more text |')
 
     def testDrawMultiLineFields(self):
         input = [['Foo', 'Bar'],
@@ -273,15 +288,15 @@ class TestRSTTableFormatter(unittest.TestCase):
         expect = """\
 This is paragraph text *before* the table.
 
-+----------+------------------------------------------------------------------------------------------------+
-| Column 1 | Column 2                                                                                       |
-+==========+================================================================================================+
-| Foo      | Put two (or more) spaces as a field separator.                                                 |
-+----------+------------------------------------------------------------------------------------------------+
-| Bar      | Even very very long lines like these are fine, as long as you do not put in line endings here. |
-+----------+------------------------------------------------------------------------------------------------+
-| Qux      | This is the last line.                                                                         |
-+----------+------------------------------------------------------------------------------------------------+
++----------+--------------------------------------------------------------------------------------------------+
+| Column 1 | Column 2                                                                                         |
++==========+==================================================================================================+
+| Foo      | Put two (or more) spaces as a field separator.                                                   |
++----------+--------------------------------------------------------------------------------------------------+
+| |Bar|    | Even very very long lines |like| these are fine, as long as you do not put in line endings here. |
++----------+--------------------------------------------------------------------------------------------------+
+| Qux      | This is the last line.                                                                           |
++----------+--------------------------------------------------------------------------------------------------+
 
 This is paragraph text *after* the table, with
 a line ending.
@@ -300,11 +315,11 @@ a line ending.
 +================+===============================================================+
 | Ease of use    | Drop dead simple!                                             |
 +----------------+---------------------------------------------------------------+
-| Foo            | Bar, qux, mux                                                 |
+| Foo            | Bar, qux, mux.                                                |
 +----------------+---------------------------------------------------------------+
-| Predictability | Lorem ipsum dolor sit amet, consectetur adipiscing elit.      |
+| Predictability | Lorem ipsum dolor sit amet, consectetur adipiscing elit;      |
 +----------------+---------------------------------------------------------------+
-|                | Nullam congue dapibus aliquet. Integer ut rhoncus leo. In hac |
+|                | nullam congue dapibus aliquet. Integer ut rhoncus leo. In hac |
 +----------------+---------------------------------------------------------------+
 |                | habitasse platea dictumst. Phasellus pretium iaculis.         |
 +----------------+---------------------------------------------------------------+
@@ -322,8 +337,8 @@ This is paragraph text *before* the table.
 | Foo      | Put two (or more) spaces |
 |          | as a field separator.    |
 +----------+--------------------------+
-| Bar      | Even very very long      |
-|          | lines like these are     |
+| |Bar|    | Even very very long      |
+|          | lines |like| these are   |
 |          | fine, as long as you do  |
 |          | not put in line endings  |
 |          | here.                    |

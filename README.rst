@@ -50,9 +50,9 @@ Creating a new table
       This is paragraph text *before* the table.
 
       Column 1  Column 2
-      Foo  Put two (or more) spaces as a field separator.
-      Bar  Even very very long lines like these are fine, as long as you do not put in line endings here.
-      Qux  This is the last line.
+      Foo    Put two (or more) spaces as a field separator.
+      |Bar|  Even very very long lines |like| these are fine, as long as you do not put in line endings here.
+      Qux    This is the last line.
 
       This is paragraph text *after* the table.
 
@@ -63,16 +63,16 @@ Creating a new table
 
       This is paragraph text *before* the table.
 
-      +----------+---------------------------------------------------------+
-      | Column 1 | Column 2                                                |
-      +==========+=========================================================+
-      | Foo      | Put two (or more) spaces as a field separator.          |
-      +----------+---------------------------------------------------------+
-      | Bar      | Even very very long lines like these are fine, as long  |
-      |          | as you do not put in line endings here.                 |
-      +----------+---------------------------------------------------------+
-      | Qux      | This is the last line.                                  |
-      +----------+---------------------------------------------------------+
+      +----------+----------------------------------------------------------+
+      | Column 1 | Column 2                                                 |
+      +==========+==========================================================+
+      | Foo      | Put two (or more) spaces as a field separator.           |
+      +----------+----------------------------------------------------------+
+      | |Bar|    | Even very very long lines |like| these are fine, as long |
+      |          | as you do not put in line endings here.                  |
+      +----------+----------------------------------------------------------+
+      | Qux      | This is the last line.                                   |
+      +----------+----------------------------------------------------------+
 
       This is paragraph text *after* the table.
 
@@ -99,3 +99,5 @@ Changes
   probably BSD License.
 - Updated for Python3 by Walter Doekes (@wdoekes) in 2017. Added vendor
   dependencies for easier install. Added debian packaging rules.
+- Added support for ``|replacements|`` inside tables. From now on the
+  column delimiters must have leading/trailing whitespace.

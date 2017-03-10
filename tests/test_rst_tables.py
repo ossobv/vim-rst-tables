@@ -319,7 +319,7 @@ a line ending.
 +----------------+---------------------------------------------------------------+
 | Predictability | Lorem ipsum dolor sit amet, consectetur adipiscing elit;      |
 +----------------+---------------------------------------------------------------+
-|                | nullam congue dapibus aliquet. Integer ut rhoncus leo. In hac |
+|                | nullam congue dapibus aliquet. Integer ūt rhoncus leo. In hac |
 +----------------+---------------------------------------------------------------+
 |                | habitasse platea dictumst. Phasellus pretium iaculis.         |
 +----------------+---------------------------------------------------------------+
